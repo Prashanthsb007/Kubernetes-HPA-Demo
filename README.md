@@ -55,3 +55,27 @@ Add these arguments under args::
 - --kubelet-insecure-tls
 - --kubelet-preferred-address-types=InternalIP
 ```
+
+For CPU
+If you just want to hit it 10 times sequentially, use:
+```
+for i in {1..10}; do curl -s http://localhost:8080/cpu; done
+```
+🔹 If You Want to See the Request Number
+```
+for i in {1..10}; do 
+  echo "Request $i"
+  curl -s http://localhost:8080/cpu
+done
+```
+
+For memory
+```
+for i in {1..10}; do curl -s http://localhost:8080/memory; done
+```
+```
+for i in {1..10}; do 
+  echo "Request $i"
+  curl -s http://localhost:8080/memory
+done
+```
