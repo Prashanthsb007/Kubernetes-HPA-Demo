@@ -26,6 +26,7 @@ Deployment
 APIService
 
 Step 3: Verify Installation
+```
  kubectl top nodes - Shows CPU and Memory usage of each Node in the cluster.
  kubectl top pods - Shows CPU and Memory usage of each Pod.
  Why These Commands Are Important:-
@@ -34,7 +35,7 @@ Step 3: Verify Installation
  Help debug resource usage
  Help verify HPA scaling
  Help detect high CPU / memory usage
-
+```
 ```
 kubectl get pods -n kube-system
 kubectl top nodes
