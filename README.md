@@ -26,11 +26,21 @@ Deployment
 APIService
 
 Step 3: Verify Installation
+kubectl top nodes - Shows CPU and Memory usage of each Node in the cluster.
+kubectl top pods - Shows CPU and Memory usage of each Pod.
+Why These Commands Are Important:-
+Get data from metrics-server
+Confirm metrics-server is working
+Help debug resource usage
+Help verify HPA scaling
+Help detect high CPU / memory usage
+
 ```
 kubectl get pods -n kube-system
 kubectl top nodes
 kubectl top pods
 ```
+
 If CPU and Memory metrics are displayed, Metrics Server is working correctly.
 Optional (For EKS Clusters)
 
