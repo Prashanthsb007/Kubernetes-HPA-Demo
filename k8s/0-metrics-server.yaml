@@ -13,14 +13,15 @@ metadata:
   name: system:aggregated-metrics-reader
   labels:
     k8s-app: metrics-server
-    rbac.authorization.k8s.io/aggregate-to-admin: "true"
-    rbac.authorization.k8s.io/aggregate-to-edit: "true"
-    rbac.authorization.k8s.io/aggregate-to-view: "true"
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"     # Users with admin role automatically inherit these rules
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"      # Users with edit role automatically inherit these rules
+    rbac.authorization.k8s.io/aggregate-to-view: "true"      # Users with view role automatically inherit these rules
 rules:
 - apiGroups: ["metrics.k8s.io"]
   resources: ["pods", "nodes"]
   verbs: ["get", "list", "watch"]
 ---
+# Defines what metrics-server itself is allowed to access inside the cluster
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -32,7 +33,7 @@ rules:
   resources:
   - pods
   - nodes
-  - nodes/stats
+  - nodes/stats        # Required to fetch CPU/memory stats from each node
   - nodes/metrics
   - namespaces
   - configmaps
@@ -47,6 +48,7 @@ rules:
   verbs:
   - create
 ---
+# Grants metrics-server access to read authentication configuration from kube-system
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -57,12 +59,13 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: extension-apiserver-authentication-reader
+  name: extension-apiserver-authentication-reader     # Allows reading auth config needed to validate requests
 subjects:
 - kind: ServiceAccount
   name: metrics-server
   namespace: kube-system
 ---
+# Allows metrics-server to delegate authentication/authorization decisions to the main API server
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -72,12 +75,13 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: system:auth-delegator
+  name: system:auth-delegator     # Enables token review and subject access review delegation
 subjects:
 - kind: ServiceAccount
   name: metrics-server
   namespace: kube-system
 ---
+# Binds the system:metrics-server ClusterRole to the metrics-server service accoun
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -93,6 +97,7 @@ subjects:
   name: metrics-server
   namespace: kube-system
 ---
+# Exposes metrics-server internally so the API server can reach it
 apiVersion: v1
 kind: Service
 metadata:
@@ -109,6 +114,7 @@ spec:
   selector:
     k8s-app: metrics-server
 ---
+# Deploys the metrics-server container with required security and performance settings
 apiVersion: apps/v1
 kind: Deployment
 metadata:
