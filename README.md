@@ -46,6 +46,15 @@ Step 3: Verify Installation
 | Deployment         | Runs metrics-server pod                   |
 | APIService         | Registers new API: `metrics.k8s.io`       |
 
+Why RBAC is Required
+
+Metrics Server must access:
+Node metrics
+Pod metrics
+Kubelet stats
+These are restricted resources.
+
+So we must give permissions using RBAC.
 ```
 ```
 kubectl get pods -n kube-system
