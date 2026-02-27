@@ -35,6 +35,17 @@ Step 3: Verify Installation
  Help debug resource usage
  Help verify HPA scaling
  Help detect high CPU / memory usage
+ 
+ It automatically creates these Kubernetes resources:
+ | Resource           | Purpose                                   |
+| ------------------ | ----------------------------------------- |
+| ServiceAccount     | Identity for metrics-server pod           |
+| ClusterRole        | Permissions to read node/pod metrics      |
+| ClusterRoleBinding | Attach permissions to service account     |
+| Service            | Internal service to expose metrics-server |
+| Deployment         | Runs metrics-server pod                   |
+| APIService         | Registers new API: `metrics.k8s.io`       |
+
 ```
 ```
 kubectl get pods -n kube-system
